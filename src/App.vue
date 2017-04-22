@@ -6,13 +6,8 @@
         <input type="search" @keypress.enter="getBooks()" v-model="query" placeholder="Search for books :)" />
         <button type="button" @click="getBooks()">Search</button>
       </div>
-      </form>
       <div class="books-index">
-        <div class="book" v-for="book in books">
-          <a href="#"><span>{{ book.id }}</span> - <span v-html="highlightSearch(book.volumeInfo.title)"></span> - <span v-html="highlightSearch(book.volumeInfo.authors.join(', '))"></span></a>
-          <p v-html="highlightSearch(book.volumeInfo.description)"></p>
-          <button type="button" class="fav" @click="favBook(book)" :class="{ 'active': isFav(book) }">&#9733;</button>
-        </div>
+        <book :book="book" :favorites="favorites" :searched-query="searchedQuery" v-for="book in books"></book>
       </div>
     </section>
     <favbar :favorites="favorites"></favbar>
@@ -20,20 +15,17 @@
 </template>
 
 <script>
-import _ from 'lodash'
 import favbar from './components/FavBar'
+import book from './components/Book'
 import bookService from './services/Book.service'
 
 const APP_STORAGE_KEY = 'rd-books-favs'
 
-function escapeForRegex (str) {
-  return str.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
-}
-
 export default {
   name: 'app',
   components: {
-    favbar
+    favbar,
+    book
   },
   data () {
     return {
@@ -56,19 +48,6 @@ export default {
       bookService.searchBooks(this.query).then((res) => {
         this.books = res.data.items
       })
-    },
-    favBook (book) {
-      this.favorites.push({ id: book.id, title: book.volumeInfo.title })
-    },
-    isFav (book) {
-      return !!_.find(this.favorites, { id: book.id })
-    },
-    highlightSearch (text) {
-      const regexString = this.searchedQuery.trim()
-        .split(' ')
-        .map(s => escapeForRegex(s))
-        .join('|')
-      return text.replace(new RegExp(regexString, 'ig'), (matchedTxt) => '<span class=\'highlight\'>' + matchedTxt + '</span>')
     }
   },
   watch: {
@@ -106,26 +85,6 @@ body {
 
   .highlight {
     background: yellow;
-  }
-}
-
-.book {
-  margin: 1em;
-  padding: 0.5em;
-  border: 1px solid #ccc;
-
-  > .fav {
-    color: #ccc;
-    transition: color 100ms linear;
-
-    &.active {
-      color: #e4e40e;
-    }
-
-    &:hover {
-      cursor: pointer;
-    }
-
   }
 }
 </style>
