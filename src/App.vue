@@ -1,18 +1,21 @@
 <template>
   <main class="main-content">
-    <favbar :favorites="favorites"></favbar>
-
-    <h1>RD Books</h1>
-    <input type="search" v-model="query" placeholder="Search for books :)" />
-    <div class="books-index">
-      <div class="book" v-for="book in filteredBooks">
-        <p>{{ book.id }} - {{ book.name }}</p>
-        <label class="fav">
-          <input class="check" type="checkbox" :value="book" v-model="favorites">
-          <span class="star">&#9733;</span>
-        </label>
+    <section class="search-area">
+      <h1>RD Books</h1>
+      <div class="search">
+        <input type="search" @keypress.enter="getBooks()" v-model="query" placeholder="Search for books :)" />
+        <button type="button" @click="getBooks()">Search</button>
       </div>
-    </div>
+      </form>
+      <div class="books-index">
+        <div class="book" v-for="book in books">
+          <a href="#"><span>{{ book.id }}</span> - <span v-html="highlightSearch(book.volumeInfo.title)"></span> - <span v-html="highlightSearch(book.volumeInfo.authors.join(', '))"></span></a>
+          <p v-html="highlightSearch(book.volumeInfo.description)"></p>
+          <button type="button" class="fav" @click="favBook(book)" :class="{ 'active': isFav(book) }">&#9733;</button>
+        </div>
+      </div>
+    </section>
+    <favbar :favorites="favorites"></favbar>
   </main>
 </template>
 
@@ -35,16 +38,10 @@ export default {
   data () {
     return {
       query: '',
+      searchedQuery: '',
       favorites: JSON.parse(localStorage.getItem(APP_STORAGE_KEY) || '[]'),
-      books: [
-        { id: 1, name: 'Book 1' },
-        { id: 2, name: 'Book 2' },
-        { id: 3, name: 'Book 3' },
-        { id: 4, name: 'Book 4' },
-        { id: 5, name: 'Book 5' },
-        { id: 6, name: 'Book 6' },
-      ],
-    };
+      books: []
+    }
   },
   computed: {
     filteredBooks () {
@@ -53,8 +50,26 @@ export default {
         book.name.indexOf(this.query) !== -1)
     }
   },
-  components: {
-    favbar,
+  methods: {
+    getBooks () {
+      this.searchedQuery = this.query
+      bookService.searchBooks(this.query).then((res) => {
+        this.books = res.data.items
+      })
+    },
+    favBook (book) {
+      this.favorites.push({ id: book.id, title: book.volumeInfo.title })
+    },
+    isFav (book) {
+      return !!_.find(this.favorites, { id: book.id })
+    },
+    highlightSearch (text) {
+      const regexString = this.searchedQuery.trim()
+        .split(' ')
+        .map(s => escapeForRegex(s))
+        .join('|')
+      return text.replace(new RegExp(regexString, 'ig'), (matchedTxt) => '<span class=\'highlight\'>' + matchedTxt + '</span>')
+    }
   },
   watch: {
     favorites: {
@@ -82,27 +97,33 @@ body {
 
 .main-content {
   position: relative;
+  display: flex;
   height: 100%;
 }
 
+.search-area {
+  flex: 1;
+
+  .highlight {
+    background: yellow;
+  }
+}
+
 .book {
+  margin: 1em;
+  padding: 0.5em;
+  border: 1px solid #ccc;
 
   > .fav {
+    color: #ccc;
+    transition: color 100ms linear;
+
+    &.active {
+      color: #e4e40e;
+    }
+
     &:hover {
       cursor: pointer;
-    }
-
-    > .star {
-      color: #ccc;
-      transition: color 100ms linear;
-    }
-
-    > .check {
-      display: none;
-
-      &:checked + .star {
-        color: #e4e40e;
-      }
     }
 
   }
