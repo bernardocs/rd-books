@@ -7,7 +7,7 @@
         <button type="button" @click="getBooks()">Search</button>
       </div>
       <div class="books-index">
-        <book :book="book" :favorites="favorites" :searched-query="searchedQuery" v-for="book in books"></book>
+        <book :book="book" :favorites="favorites" :searched-query="searchedQuery" v-for="book in books" :key="book.id"></book>
       </div>
     </section>
     <favbar :favorites="favorites"></favbar>

@@ -2,7 +2,7 @@
   <div class="book">
     <a href="#"><span>{{ book.id }}</span> - <span v-html="highlightSearch(book.volumeInfo.title)"></span> - <span v-html="highlightSearch(book.volumeInfo.authors.join(', '))"></span></a>
     <p v-html="highlightSearch(book.volumeInfo.description)"></p>
-    <button type="button" class="fav" @click="favBook(book)" :class="{ 'active': isFav(book) }">&#9733;</button>
+    <button type="button" class="fav" @click="toggleFavBook()" :class="{ 'active': isFav(book) }">&#9733;</button>
   </div>
 </template>
 
@@ -17,8 +17,12 @@ export default {
   name: 'book',
   props: ['book', 'favorites', 'searchedQuery'],
   methods: {
-    favBook () {
-      this.favorites.push({ id: this.book.id, title: this.book.volumeInfo.title })
+    toggleFavBook () {
+      if (this.isFav()) {
+        this.favorites.splice(_.findIndex(this.favorites, { id: this.book.id }), 1)
+      } else {
+        this.favorites.push(this.bookObj)
+      }
     },
     isFav () {
       return !!_.find(this.favorites, { id: this.book.id })
@@ -29,6 +33,11 @@ export default {
         .map(s => escapeForRegex(s))
         .join('|')
       return text.replace(new RegExp(regexString, 'ig'), (matchedTxt) => '<span class=\'highlight\'>' + matchedTxt + '</span>')
+    }
+  },
+  computed: {
+    bookObj () {
+      return { id: this.book.id, title: this.book.volumeInfo.title }
     }
   }
 }
