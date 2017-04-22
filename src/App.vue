@@ -7,7 +7,10 @@
     <div class="books-index">
       <div class="book" v-for="book in filteredBooks">
         <p>{{ book.id }} - {{ book.name }}</p>
-        <input type="checkbox" :value="book" v-model="favorites">
+        <label class="fav">
+          <input class="check" type="checkbox" :value="book" v-model="favorites">
+          <span class="star">&#9733;</span>
+        </label>
       </div>
     </div>
   </main>
@@ -71,5 +74,28 @@ body {
 .main-content {
   position: relative;
   height: 100%;
+}
+
+.book {
+
+  > .fav {
+    &:hover {
+      cursor: pointer;
+    }
+
+    > .star {
+      color: #ccc;
+      transition: color 100ms linear;
+    }
+
+    > .check {
+      display: none;
+
+      &:checked + .star {
+        color: #e4e40e;
+      }
+    }
+
+  }
 }
 </style>
