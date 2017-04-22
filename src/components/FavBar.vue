@@ -10,8 +10,8 @@
 <script>
 export default {
   name: 'favbar',
-  props: ['favorites'],
-};
+  props: ['favorites']
+}
 </script>
 
 <style lang="scss">

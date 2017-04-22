@@ -17,13 +17,22 @@
 </template>
 
 <script>
-import favbar from './components/FavBar';
+import _ from 'lodash'
+import favbar from './components/FavBar'
+import bookService from './services/Book.service'
 
-const APP_STORAGE_KEY = 'rd-books-favs';
+const APP_STORAGE_KEY = 'rd-books-favs'
+
+function escapeForRegex (str) {
+  return str.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
+}
 
 export default {
   name: 'app',
-  data() {
+  components: {
+    favbar
+  },
+  data () {
     return {
       query: '',
       favorites: JSON.parse(localStorage.getItem(APP_STORAGE_KEY) || '[]'),
@@ -38,23 +47,23 @@ export default {
     };
   },
   computed: {
-    filteredBooks() {
+    filteredBooks () {
       return this.books.filter(book =>
         book.id.toString().indexOf(this.query) !== -1 ||
-        book.name.indexOf(this.query) !== -1);
-    },
+        book.name.indexOf(this.query) !== -1)
+    }
   },
   components: {
     favbar,
   },
   watch: {
     favorites: {
-      handler(favorites) {
-        localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(favorites));
-      },
-    },
-  },
-};
+      handler (favorites) {
+        localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(favorites))
+      }
+    }
+  }
+}
 </script>
 
 <style lang="scss">
