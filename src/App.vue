@@ -16,12 +16,14 @@
 <script>
 import favbar from './components/FavBar';
 
+const APP_STORAGE_KEY = 'rd-books-favs';
+
 export default {
   name: 'app',
   data() {
     return {
       query: '',
-      favorites: [],
+      favorites: JSON.parse(localStorage.getItem(APP_STORAGE_KEY) || '[]'),
       books: [
         { id: 1, name: 'Book 1' },
         { id: 2, name: 'Book 2' },
@@ -41,6 +43,13 @@ export default {
   },
   components: {
     favbar,
+  },
+  watch: {
+    favorites: {
+      handler(favorites) {
+        localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(favorites));
+      },
+    },
   },
 };
 </script>
