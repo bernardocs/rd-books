@@ -1,9 +1,14 @@
 <template>
   <div class="book">
-    <strong class="title" v-html="highlightSearch(book.volumeInfo.title)"></strong>
-    <span class="authors" v-html="highlightSearch(bookAuthors)"></span>
-    <p class="description" v-html="highlightSearch(book.volumeInfo.description)"></p>
-    <button type="button" class="fav" @click="toggleFavBook()" :class="{ 'active': isFav }">&#9733;</button>
+    <figure class="thumb">
+      <img :src="book.volumeInfo.imageLinks.smallThumbnail" alt="Book Thumbnail" />
+    </figure>
+    <div class="data">
+      <strong class="title" v-html="highlightSearch(book.volumeInfo.title)"></strong>
+      <span class="authors" v-html="highlightSearch(bookAuthors)"></span>
+      <p class="description" v-html="highlightSearch(book.volumeInfo.description)"></p>
+      <button type="button" class="fav" @click="toggleFavBook()" :class="{ 'active': isFav }">&#9733;</button>
+    </div>
   </div>
 </template>
 
@@ -56,65 +61,77 @@ export default {
 .book {
   position: relative;
   display: flex;
-  flex-direction: column;
   margin: 1em;
   padding: 1em 2.5em 1em 1em;
   border: 1px solid #ccc;
   border-radius: 6px;
   height: 8em;
 
-  > .title {
-    font-weight: bold;
-    font-size: 1.4em;
+  > .thumb {
+    height: 100%;
+    margin-right: 1em;
+
+    > img {
+      height: 100%;
+    }
   }
 
-  > .authors {
-    margin-bottom: 1em;
-    font-style: italic;
-    font-size: 0.8em;
-  }
+  > .data {
+    display: flex;
+    flex-direction: column;
 
-  > .description {
-    position: relative;
-    flex: 1;
-    font-size: 0.8em;
-    overflow: hidden;
+    > .title {
+      font-weight: bold;
+      font-size: 1.4em;
+    }
 
-    &::after {
+    > .authors {
+      margin-bottom: 1em;
+      font-style: italic;
+      font-size: 0.8em;
+    }
+
+    > .description {
+      position: relative;
+      flex: 1;
+      font-size: 0.8em;
+      overflow: hidden;
+
+      &::after {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to top, #fff, transparent);
+        content: '';
+      }
+    }
+
+    > .fav {
       position: absolute;
       top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(to top, #fff, transparent);
-      content: '';
+      right: 0;
+      color: #ccc;
+      transition: color 100ms linear;
+      border: 0;
+      background: none;
+      font-size: 2.5em;
+      outline: none;
+      transition: transform 200ms linear;
+
+      &:active {
+        transform: scale(0.8);
+      }
+
+      &.active {
+        color: #e4e40e;
+      }
+
+      &:hover {
+        cursor: pointer;
+      }
     }
-  }
-
-  > .fav {
-    position: absolute;
-    top: 0;
-    right: 0;
-    color: #ccc;
-    transition: color 100ms linear;
-    border: 0;
-    background: none;
-    font-size: 2.5em;
-    outline: none;
-    transition: transform 200ms linear;
-
-    &:active {
-      transform: scale(0.8);
-    }
-
-    &.active {
-      color: #e4e40e;
-    }
-
-    &:hover {
-      cursor: pointer;
-    }
-
   }
 }
 </style>
