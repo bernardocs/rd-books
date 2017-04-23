@@ -3,8 +3,8 @@
     <button class="toggle" @click="active = !active">&#9733;</button>
     <h3 class="title">Favorites</h3>
     <ul class="list">
-      <li class="items" v-for="fav in favorites">
-        <a href="#">{{ fav.title }}</a>
+      <li class="item" v-for="fav in favorites">
+        <a class="title" @click="openBookModal(fav.id)">{{ fav.title }}</a>
         <span title="Un-favorite book" class="remove" @click="removeFav(fav)">&times;</span>
       </li>
     </ul>
@@ -23,6 +23,9 @@ export default {
     }
   },
   methods: {
+    openBookModal (bookId) {
+      this.$emit('openBookModal', bookId)
+    },
     removeFav (fav) {
       this.favorites.splice(_.findIndex(this.favorites, { id: fav.id }), 1)
     }
@@ -79,12 +82,18 @@ $primary: #2c3e50;
     display: flex;
     flex-direction: column;
 
-    > .items {
+    > .item {
       display: flex;
       margin: 0 0.5em 0.5em;
       padding: 0.5em;
       border: 1px solid #ccc;
       border-radius: 6px;
+
+      > .title {
+        &:hover {
+          cursor: pointer;
+        }
+      }
 
       > .remove {
         margin-left: auto;

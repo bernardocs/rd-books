@@ -29,8 +29,8 @@ class BookService {
     return axios.get(`${BOOKS_API_URL}?${this.parseParamsObjToURL(params)}`)
   }
 
-  getBook (book) {
-    return axios.get(book.selfLink, { apiKey: API_KEY })
+  getBook (bookId) {
+    return axios.get(`${BOOKS_API_URL}/${bookId}?apiKey=${API_KEY}`)
   }
 }
 

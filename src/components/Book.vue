@@ -9,6 +9,7 @@
       <p class="description" v-html="highlightSearch(book.volumeInfo.description)"></p>
       <button type="button" class="fav" @click="toggleFavBook()" :class="{ 'active': isFav }">&#9733;</button>
     </div>
+    <a class="more-info" @click="openBookModal()">More info</a>
   </div>
 </template>
 
@@ -23,6 +24,9 @@ export default {
   name: 'book',
   props: ['book', 'favorites', 'searchedQuery'],
   methods: {
+    openBookModal () {
+      this.$emit('openBookModal', this.book.id)
+    },
     toggleFavBook () {
       if (this.isFav) {
         this.favorites.splice(_.findIndex(this.favorites, { id: this.book.id }), 1)
@@ -67,12 +71,32 @@ export default {
   border-radius: 6px;
   height: 8em;
 
+  &:hover > .more-info {
+    opacity: 1;
+  }
+
   > .thumb {
     height: 100%;
     margin-right: 1em;
 
     > img {
       height: 100%;
+    }
+  }
+
+  > .more-info {
+    position: absolute;
+    bottom: 0.5em;
+    left: 50%;
+    font-size: 0.8em;
+    font-weight: bold;
+    opacity: 0;
+    transform: translateX(-50%);
+    transition: opacity 200ms linear;
+
+    &:hover {
+      opacity: 0.7;
+      cursor: pointer;
     }
   }
 

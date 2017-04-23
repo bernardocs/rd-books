@@ -9,7 +9,13 @@
       <div class="books-index">
         <loader v-if="loading"></loader>
         <p v-if="!loading && searchedQuery && booksIsEmpty">No search results :(</p>
-        <book :book="book" :favorites="favorites" :searched-query="searchedQuery" v-for="book in books" :key="book.id"></book>
+        <book :book="book"
+          :favorites="favorites"
+          :searched-query="searchedQuery"
+          v-for="book in books"
+          :key="book.id"
+          @openBookModal="openBookModal">
+        </book>
         <ul class="pagination" v-if="!loading && searchedQuery && !booksIsEmpty">
           <li class="page" :class="{'active': currentPage === 0}">
             <button @click="getBooks(0, searchedQuery)" :disabled="currentPage === 0">1</button>
@@ -25,7 +31,8 @@
         </ul>
       </div>
     </section>
-    <favbar :favorites="favorites"></favbar>
+    <favbar :favorites="favorites" @openBookModal="openBookModal"></favbar>
+    <book-modal v-if="modalInfo.active" :modal-info="modalInfo"></book-modal>
   </main>
 </template>
 
@@ -33,6 +40,7 @@
 import favbar from './components/FavBar'
 import book from './components/Book'
 import loader from './components/Loader'
+import bookModal from './components/BookModal'
 import bookService from './services/Book.service'
 
 const APP_STORAGE_KEY = 'rd-books-favs'
@@ -42,7 +50,8 @@ export default {
   components: {
     favbar,
     book,
-    loader
+    loader,
+    bookModal
   },
   data () {
     return {
@@ -53,7 +62,11 @@ export default {
       itemsPerPage: 15,
       loading: false,
       favorites: JSON.parse(localStorage.getItem(APP_STORAGE_KEY) || '[]'),
-      books: []
+      books: [],
+      modalInfo: {
+        active: false,
+        bookId: ''
+      }
     }
   },
   computed: {
@@ -65,6 +78,12 @@ export default {
     }
   },
   methods: {
+    openBookModal (bookId) {
+      this.modalInfo = {
+        active: true,
+        bookId
+      }
+    },
     getBooks (selectedPage = 0, query) {
       this.books = []
       this.currentPage = selectedPage
