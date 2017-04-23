@@ -77,6 +77,7 @@ export default {
   > .description {
     position: relative;
     flex: 1;
+    font-size: 0.8em;
     overflow: hidden;
 
     &::after {

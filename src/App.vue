@@ -108,10 +108,12 @@ body {
   position: relative;
   display: flex;
   height: 100%;
+  overflow: hidden;
 }
 
 .search-area {
   flex: 1;
+  padding-bottom: 1em;
   overflow: auto;
 
   > .title {
