@@ -18,10 +18,13 @@ class BookService {
     return result
   }
 
-  searchBooks (query) {
+  searchBooks (query, startIndex = 0) {
     const params = {
       q: this.formatQuery(query),
-      apiKey: API_KEY
+      printType: 'books',
+      apiKey: API_KEY,
+      maxResults: 15,
+      startIndex
     }
     return axios.get(`${BOOKS_API_URL}?${this.parseParamsObjToURL(params)}`)
   }
