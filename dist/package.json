@@ -1,0 +1,10 @@
+{
+  "name": "rd-books",
+  "version": "1.0.0",
+  "description": "A clean minimal book index",
+  "author": "Bernardo Santos",
+  "private": true,
+  "scripts": {
+    "postinstall": "npm install express"
+  }
+}
