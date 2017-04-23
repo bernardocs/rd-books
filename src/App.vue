@@ -1,10 +1,10 @@
 <template>
   <main class="main-content">
     <section class="search-area">
-      <h1>RD Books</h1>
+      <h1 class="title">RD Books</h1>
       <div class="search">
-        <input type="search" @keypress.enter="getBooks()" v-model="query" placeholder="Search for books :)" />
-        <button type="button" @click="getBooks()">Search</button>
+        <input class="search-bar" type="search" @keypress.enter="getBooks()" v-model="query" placeholder="Search for books :)" />
+        <button class="button" type="button" @click="getBooks()">Search</button>
       </div>
       <div class="books-index">
         <loader v-if="loading"></loader>
@@ -90,6 +90,8 @@ export default {
 </script>
 
 <style lang="scss">
+$primary: #2c3e50;
+
 html,
 body {
   height: 100%;
@@ -99,8 +101,7 @@ body {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+  color: $primary;
 }
 
 .main-content {
@@ -111,9 +112,47 @@ body {
 
 .search-area {
   flex: 1;
+  overflow: auto;
+
+  > .title {
+    margin: 0.5em 0 0.2em;
+    text-align: center;
+    font-weight: bold;
+    font-size: 2.5em;
+  }
+
+  .search {
+    display: flex;
+    justify-content: center;
+
+    .search-bar {
+      margin-right: 0.25em;
+      font-size: 1.75em;
+      padding: 0.25em 0.5em;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      color: $primary;
+    }
+
+    .button {
+      padding: 0.5em;
+      border: 0;
+      border-radius: 6px;
+      background: $primary;
+      font-size: 1.75em;
+      color: #fff;
+      transition: background 200ms linear;
+
+      &:hover {
+        background: #476481;
+        cursor: pointer;
+      }
+    }
+  }
 
   .highlight {
-    background: yellow;
+    border-radius: 2px;
+    background: #ccc;
   }
 }
 
@@ -129,12 +168,12 @@ body {
     &.active > button {
       border-color: transparent;
       color: #fff;
-      background: #2c3e50;
+      background: $primary;
 
       &:hover {
         cursor: auto;
         color: #fff;
-        background: #2c3e50;
+        background: $primary;
       }
     }
 
@@ -142,10 +181,10 @@ body {
       display: block;
       width: 2em;
       padding: 0.5em 0;
-      border: 1px solid #2c3e50;
+      border: 1px solid $primary;
       border-radius: 6px;
       background: transparent;
-      color: #2c3e50;
+      color: $primary;
       transition: background 200ms linear;
 
       &:hover {
