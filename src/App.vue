@@ -7,6 +7,8 @@
         <button type="button" @click="getBooks()">Search</button>
       </div>
       <div class="books-index">
+        <loader v-if="loading"></loader>
+        <p v-if="!loading && searchedQuery && !books.length">No search results :(</p>
         <book :book="book" :favorites="favorites" :searched-query="searchedQuery" v-for="book in books" :key="book.id"></book>
       </div>
     </section>
@@ -17,6 +19,7 @@
 <script>
 import favbar from './components/FavBar'
 import book from './components/Book'
+import loader from './components/Loader'
 import bookService from './services/Book.service'
 
 const APP_STORAGE_KEY = 'rd-books-favs'
@@ -25,28 +28,27 @@ export default {
   name: 'app',
   components: {
     favbar,
-    book
+    book,
+    loader
   },
   data () {
     return {
       query: '',
       searchedQuery: '',
+      loading: false,
       favorites: JSON.parse(localStorage.getItem(APP_STORAGE_KEY) || '[]'),
       books: []
-    }
-  },
-  computed: {
-    filteredBooks () {
-      return this.books.filter(book =>
-        book.id.toString().indexOf(this.query) !== -1 ||
-        book.name.indexOf(this.query) !== -1)
     }
   },
   methods: {
     getBooks () {
       this.searchedQuery = this.query
+      this.loading = true
       bookService.searchBooks(this.query).then((res) => {
         this.books = res.data.items
+        this.loading = false
+      }).catch((res) => {
+        console.error('Error on searchBooks', res)
       })
     }
   },

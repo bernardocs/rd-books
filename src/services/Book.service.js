@@ -8,8 +8,22 @@ class BookService {
     return query.split(' ').map(s => encodeURIComponent(s)).join('+')
   }
 
+  parseParamsObjToURL (params) {
+    let result = ''
+    for (let prop in params) {
+      if (params.hasOwnProperty(prop)) {
+        result += `${prop}=${params[prop]}&`
+      }
+    }
+    return result
+  }
+
   searchBooks (query) {
-    return axios.get(`${BOOKS_API_URL}?q=${this.formatQuery(query)}&apiKey=${API_KEY}`)
+    const params = {
+      q: this.formatQuery(query),
+      apiKey: API_KEY
+    }
+    return axios.get(`${BOOKS_API_URL}?${this.parseParamsObjToURL(params)}`)
   }
 
   getBook (book) {
