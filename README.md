@@ -1,7 +1,7 @@
 # RD Books
 > A cute minimal book index
 
-Sample app running on (http://rd-books.herokuapp.com)[http://rd-books.herokuapp.com]
+Sample app running on [http://rd-books.herokuapp.com](http://rd-books.herokuapp.com)
 
 ## Build Setup
 ``` bash
