@@ -42,8 +42,7 @@ import book from './components/Book'
 import loader from './components/Loader'
 import bookModal from './components/BookModal'
 import bookService from './services/Book.service'
-
-const APP_STORAGE_KEY = 'rd-books-favs'
+import storageService from './services/Storage.service'
 
 export default {
   name: 'app',
@@ -61,7 +60,7 @@ export default {
       totalItems: 0,
       itemsPerPage: 15,
       loading: false,
-      favorites: JSON.parse(localStorage.getItem(APP_STORAGE_KEY) || '[]'),
+      favorites: storageService.fetch(),
       books: [],
       modalInfo: {
         active: false,
@@ -101,7 +100,7 @@ export default {
   watch: {
     favorites: {
       handler (favorites) {
-        localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(favorites))
+        storageService.save(favorites)
       }
     }
   }
