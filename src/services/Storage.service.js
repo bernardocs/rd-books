@@ -2,7 +2,7 @@ const APP_STORAGE_KEY = 'rd-books-favs'
 
 class StorageService {
   fetch () {
-    JSON.parse(localStorage.getItem(APP_STORAGE_KEY) || '[]')
+    return JSON.parse(localStorage.getItem(APP_STORAGE_KEY) || '[]')
   }
 
   save (info) {
